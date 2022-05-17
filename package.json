@@ -1,0 +1,27 @@
+{
+  "name": "app",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "start": "node app/app.js",
+    "dev": "nodemon app/app.js"
+  },
+  "dependencies": {
+    "@prisma/client": "^3.14.0",
+    "body-parser": "^1.20.0",
+    "cookie-parser": "~1.4.4",
+    "debug": "~2.6.9",
+    "dotenv": "^16.0.1",
+    "express": "~4.16.1",
+    "http-errors": "~1.6.3",
+    "jade": "^0.29.0",
+    "morgan": "~1.9.1",
+    "typegraphql-prisma": "^0.20.3"
+  },
+  "prisma": {
+    "schema": "app/prisma/schema.prisma"
+  },
+  "devDependencies": {
+    "prisma": "^3.14.0"
+  }
+}
