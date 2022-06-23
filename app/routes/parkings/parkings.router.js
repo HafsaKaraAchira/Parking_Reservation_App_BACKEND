@@ -7,4 +7,7 @@ router.get("/all", parkingController.getAllParkings);
 // Get parking by id
 router.get("/:id", parkingController.getParkingById);
 
+//get search parkings result
+router.post("/search", parkingController.getParkingsSearchResult);
+
 module.exports = router;

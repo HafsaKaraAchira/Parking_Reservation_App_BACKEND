@@ -8,11 +8,11 @@ datasource db {
 }
 
 model Horaire {
-  horaireID        Int       @id
+  horaireID        Int       @id @default(autoincrement())
   parkingID        Int?
-  fermetureHoraire DateTime? @db.Date
-  ouvertureHoraire DateTime? @db.Date
-  day              DayType?
+  fermetureHoraire DateTime? @db.Time
+  ouvertureHoraire DateTime? @db.Time
+  weekDay          DayType?
   Parking          Parking?  @relation(fields: [parkingID], references: [parkingID], onDelete: NoAction, onUpdate: NoAction, map: "Parking")
 }
 
@@ -28,57 +28,61 @@ model Note {
 }
 
 model Parking {
-  parkingID     Int           @id
-  photo         String?
-  nom           String?
-  commune       String?
-  totalPlaces   Int?
-  tarif         Float?        @db.Real
-  longitude_    Float?        @map("longitude ") @db.Real
-  latitude      Float?        @db.Real
-  occupedPlaces Int?
-  etat          EtatType?
-  Horaire       Horaire[]
-  Note          Note[]
-  Reservation   Reservation[]
+  parkingID              Int           @id @default(autoincrement())
+  nom                    String?
+  commune                String?
+  photo                  String?
+  unitPrice              Float?        @db.Real
+  longitude              Float?        @db.Real
+  latitude               Float?        @db.Real
+  reservedPositionsNum   Int?
+  totalPositionsNum      Int?
+  availablePositionsList String[]
+  Horaire                Horaire[]
+  Note                   Note[]
+  Reservation            Reservation[]
 }
 
 model Reservation {
-  reservationID Int          @id
-  utilisateurId Int?
-  parkingID     Int?
-  enter         String?
-  sortie        String?
-  date          DateTime?    @db.Date
-  numPlace      Int?
-  qrCode        Bytes?
-  paiement      Float?       @db.Real
-  Parking       Parking?     @relation(fields: [parkingID], references: [parkingID], onDelete: NoAction, onUpdate: NoAction, map: "parkingID")
-  Utilisateur   Utilisateur? @relation(fields: [utilisateurId], references: [utilisateurID], onDelete: NoAction, onUpdate: NoAction, map: "utilisateurID")
+  reservationID    Int          @id @default(autoincrement())
+  utilisateurID    Int?
+  parkingID        Int?
+  entryTime        DateTime?    @db.Time
+  exitTime         DateTime?    @db.Time
+  date             DateTime?    @db.Date
+  reservedPosition String?
+  qrCode           String?
+  paiement         Int?
+  Parking          Parking?     @relation(fields: [parkingID], references: [parkingID], onDelete: NoAction, onUpdate: NoAction, map: "parkingID")
+  Utilisateur      Utilisateur? @relation(fields: [utilisateurID], references: [utilisateurID], onDelete: NoAction, onUpdate: NoAction, map: "utilisateurID")
+  Paiement         Paiement?    @relation(fields: [paiement], references: [paiementID], onDelete: NoAction, onUpdate: NoAction, map: "paiementID")
+}
+
+model Paiement {
+  paiementID     Int           @id @default(autoincrement())
+  estimatedPrice Float?        @db.Real
+  realExitTime   DateTime?     @db.Time
+  paidPrice      Float?        @default(0) @db.Real
+  Reservation    Reservation?
 }
 
 model Utilisateur {
-  utilisateurID Int           @id
+  utilisateurID Int           @id @default(autoincrement())
   nom           String?
   prenom        String?
-  email         String?
-  telephone     BigInt?
+  email         String?       @unique
+  telephone     String?
   motDePasse    String?
   Note          Note[]
   Reservation   Reservation[]
 }
 
 enum DayType {
-  samedi
-  dimanche
-  lundi
-  mardi
-  mercredi
-  jeudi
-  vendredi
-}
-
-enum EtatType {
-  ouvert
-  ferm_ @map("fermé")
+  Dimanche
+  Lundi
+  Mardi
+  Mercredi
+  Jeudi
+  Vendredi
+  Samedi
 }
